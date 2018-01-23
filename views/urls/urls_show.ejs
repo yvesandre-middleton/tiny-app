@@ -6,15 +6,11 @@
 <body>
     <!-- Add your EJS code here -->
     <header>
-    <% include ../partials/header %>
+    <% include ../partials/_header %>
     </header>
     <main>
-    <ul>
-       <% for (urlFound in urls) { %>
-        <li><%= urlFound + ": " + urls[urlFound] %></li>
-    <% } %>
-</ul>
-        <li>Shortened Urls <a href= ></a></li>
+      <h1> Tiny App ! </h1>
+        <p><%= urls[shortURL] + " " + "is now" + " " + shortURL%></p>
      </main>
 </body>
 </html>
