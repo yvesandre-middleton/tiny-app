@@ -5,11 +5,16 @@
 </head>
 <body>
     <!-- Add your EJS code here -->
+    <header>
+    <% include ../partials/header %>
+    </header>
+    <main>
     <ul>
        <% for (urlFound in urls) { %>
         <li><%= urlFound + ": " + urls[urlFound] %></li>
     <% } %>
 </ul>
         <li>Shortened Urls <a href= ></a></li>
+     </main>
 </body>
 </html>

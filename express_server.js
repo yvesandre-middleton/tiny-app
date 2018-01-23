@@ -10,9 +10,14 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.get("/urls/:id", (req, res) => {
+  let templateVars = { shortURL: req.params.id };
+  res.render("urls/urls_show", templateVars);
+});
+
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
-  res.render("urls_index", templateVars);
+  res.render("urls/urls_index", templateVars);
 });
 
 app.get("/", (req, res) => {
