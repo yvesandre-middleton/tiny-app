@@ -4,7 +4,7 @@ var PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-function generateRandomString() {
+function generateShortUrl() {
    const vocabulary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z'];
    let output = "";
    for (let i = 0; i < 6; i++) {
@@ -16,8 +16,8 @@ function generateRandomString() {
 
 function getRandomInt() {
    min = Math.ceil(0);
-   max = Math.floor(26);
-   return Math.floor(Math.random() * (26 - 0)) + 0;
+   max = Math.floor(25);
+   return Math.floor(Math.random() * (25 - 0)) + 0;
 }
 
 app.set("view engine", "ejs");
@@ -27,12 +27,21 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.get("/u/:shortURL", (req, res) => {
+  // shortURL points to the key of th objects found in urlDatabase
+  let shortURL = req.params.shortURL
+  let longURL = urlDatabase[shortURL]
+  res.redirect(longURL);
+});
+
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
+  var shortURL = generateShortUrl();
+  urlDatabase[shortURL] = req.body.longURL
+  console.log(urlDatabase);  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
