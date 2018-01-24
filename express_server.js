@@ -31,6 +31,22 @@ var urlDatabase = {
 //   console.log("Remind me to delete ",req.params.aYear)
 //   res.redirect('/lps')
 // });
+app.post("/urls/:id/delete", (req, res) => {
+// console.log("Remind me to delete ",req.params.id)
+delete urlDatabase[req.params.id];
+res.redirect("/urls")
+});
+
+app.post("/urls/:id", (req, res) => {
+// console.log("Remind me to delete ",req.params.id)
+  var shortURL = req.params.id
+  urlDatabase[shortURL] = req.body.longURL
+  // console.log("whole object", urlDatabase);  // debug statement to see POST parameters
+  // console.log("new id", req.params.id)
+  // console.log("long url", req.body.longURL)
+  // console.log(shortURL)
+  res.redirect(/urls/);         // Respond with 'Ok' (we will replace this)
+});
 
 app.get("/u/:shortURL", (req, res) => {
   // shortURL points to the key of th objects found in urlDatabase
@@ -76,9 +92,5 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.post("/urls/:id/delete", (req, res) => {
-// console.log("Remind me to delete ",req.params.id)
-delete urlDatabase[req.params.id];
-res.redirect("/urls")
-});
+
 
