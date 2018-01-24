@@ -27,6 +27,11 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// app.delete('/lps/:aYear', (req, res) => {
+//   console.log("Remind me to delete ",req.params.aYear)
+//   res.redirect('/lps')
+// });
+
 app.get("/u/:shortURL", (req, res) => {
   // shortURL points to the key of th objects found in urlDatabase
   let shortURL = req.params.shortURL
@@ -69,5 +74,11 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+// console.log("Remind me to delete ",req.params.id)
+delete urlDatabase[req.params.id];
+res.redirect("/urls")
 });
 
