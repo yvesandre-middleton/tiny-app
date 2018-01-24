@@ -1,8 +1,10 @@
-var express = require("express");
-var app = express();
-var PORT = process.env.PORT || 8080; // default port 8080
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 
 function generateShortUrl() {
    const vocabulary = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "x", "y", "z"];
@@ -20,6 +22,8 @@ function getRandomInt() {
    return Math.floor(Math.random() * (25 - 0)) + 0;
 }
 
+
+
 app.set("view engine", "ejs");
 
 var urlDatabase = {
@@ -27,10 +31,16 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// app.delete('/lps/:aYear', (req, res) => {
-//   console.log("Remind me to delete ",req.params.aYear)
-//   res.redirect('/lps')
-// });
+app.post("/logout/", (req, res) => {
+  res.clearCookie('username');
+  res.redirect("/urls")
+})
+
+app.post("/login/", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect("/urls")
+})
+
 app.post("/urls/:id/delete", (req, res) => {
 // console.log("Remind me to delete ",req.params.id)
 delete urlDatabase[req.params.id];
@@ -67,12 +77,14 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, urls: urlDatabase};
+  let templateVars = { shortURL: req.params.id, urls: urlDatabase,
+    username: req.cookies["username"]};
   res.render("urls/urls_show", templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies["username"] };
   res.render("urls/urls_index", templateVars);
 });
 
