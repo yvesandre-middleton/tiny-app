@@ -43,8 +43,10 @@ app.post("/login/", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
 // console.log("Remind me to delete ",req.params.id)
+console.log(urlDatabase[req.params.id])
 delete urlDatabase[req.params.id];
 res.redirect("/urls")
+
 });
 
 app.post("/urls/:id", (req, res) => {
@@ -62,18 +64,21 @@ app.get("/u/:shortURL", (req, res) => {
   // shortURL points to the key of th objects found in urlDatabase
   let shortURL = req.params.shortURL
   let longURL = urlDatabase[shortURL]
+  console.log(longURL)
   res.redirect(longURL);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {username: req.cookies["username"]};
+  res.render("urls/urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {
   var shortURL = generateShortUrl();
-  urlDatabase[shortURL] = req.body.longURL
-  console.log(urlDatabase);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  var longURL = "http://www." + req.body.longURL
+  urlDatabase[shortURL] = longURL
+  console.log(urlDatabase[shortURL]);  // debug statement to see POST parameters
+  res.redirect(/urls/);         // Respond with 'Ok' (we will replace this)
 });
 
 app.get("/urls/:id", (req, res) => {
