@@ -52,7 +52,7 @@ res.redirect("/urls")
 app.post("/urls/:id", (req, res) => {
 // console.log("Remind me to delete ",req.params.id)
   var shortURL = req.params.id
-  urlDatabase[shortURL] = req.body.longURL
+  urlDatabase[shortURL] = "http://www." + req.body.longURL
   // console.log("whole object", urlDatabase);  // debug statement to see POST parameters
   // console.log("new id", req.params.id)
   // console.log("long url", req.body.longURL)
