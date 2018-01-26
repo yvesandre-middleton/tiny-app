@@ -1,3 +1,4 @@
+// Set Api's, middleware and options to be used
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
@@ -6,6 +7,9 @@ const cookieParser = require('cookie-parser')
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 
+const bcrypt = require('bcrypt');
+
+// Use this function to generate a random string for shortURL and user ID
 function generateShortUrl() {
    const vocabulary = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "x", "y", "z"];
    let output = "";
@@ -15,13 +19,15 @@ function generateShortUrl() {
    }
    return output;
 }
-
+// This function is used as part of the generate short URL function to create a random string
 function getRandomInt() {
    min = Math.ceil(0);
    max = Math.floor(25);
    return Math.floor(Math.random() * (25 - 0)) + 0;
 }
 
+// This function checks is the URL starts with http:// and if not adds it making sure
+// redirect functionality doesn't break
 function checkUrl(longURL) {
   var check = longURL.match(/^https?:\/\//);
   if (check !== null) {
@@ -31,6 +37,7 @@ function checkUrl(longURL) {
   }
 }
 
+// This function updates the Urls so that the users id is embedded
 function updateUserURLS (id) {
   const userURLS = {};
   for (let key in urlDatabase)
@@ -74,7 +81,7 @@ app.get("/login", (req, res) => {
 
 app.post("/register", (req, res) => {
   var email = req.body.email
-  var password = req.body.password
+  const password = bcrypt.hashSync(req.body.password, 10);
   for (key in users) {
     if(users[key].email === email) {
       console.log("duplicate found");
@@ -84,6 +91,7 @@ app.post("/register", (req, res) => {
   }
   var id = generateShortUrl();
   res.cookie('user_id', id);
+  // req.session.user_id = id
 
   users[id] = {id: id, email: email, password: password }
   // console.log("email>>", email)
@@ -106,7 +114,7 @@ app.post("/login", (req, res) => {
   var email = req.body.email
   var password = req.body.password
   for (key in users) {
-    if(users[key].email === email && users[key].password === password) {
+    if(users[key].email === email && bcrypt.compareSync(password, users[key]['password'])) {
       res.cookie('user_id', key)
       res.redirect('/urls')
       return
