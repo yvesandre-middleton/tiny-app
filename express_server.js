@@ -60,24 +60,11 @@ console.log(updateUserURLS());
 app.set("view engine", "ejs");
 
 var urlDatabase = {
-  // "b2xVn2": "http://www.lighthouselabs.ca",
-  // "b2xVn2": {
-      // userID: tu46468r426,
-      // longURL: "http://www.lighthouselabs.ca",
-  // }
+
 };
 
 const users = {
- //  "userRandomID": {
- //    id: "userRandomID",
- //    email: "user@example.com",
- //    password: "purple-monkey-dinosaur"
- //  },
- // "user2RandomID": {
- //    id: "user2RandomID",
- //    email: "user2@example.com",
- //    password: "dishwasher-funk"
- //  }
+
 }
 
 app.get("/login", (req, res) => {
@@ -124,7 +111,7 @@ app.post("/login", (req, res) => {
     if(users[key].email === email && bcrypt.compareSync(password, users[key]['password'])) {
       req.session.user_id = key
       res.redirect('/urls')
-      return
+      return;
     }
   }
   res.status(401).send('NOT AUTH')
@@ -146,7 +133,7 @@ res.redirect("/urls")
 app.post("/urls/:id", (req, res) => {
   console.log("Remind me to delete ", req.params.id)
   let shortURL = req.params.id
-  let longURL = req.body.longURL
+  let longURL = checkUrl(req.body.longURL);
   let user_id = req.session.user_id
 console.log("id>>>", urlDatabase[shortURL].userID)
 console.log("whyyy", user_id)
