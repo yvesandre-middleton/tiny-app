@@ -12,8 +12,7 @@
     <main>
         <h1> Tiny App ! </h1>
         <div>
-            <h2> Reassign: <%=shortURL %> to a different URL than <%=urls[shortURL] %> </h2> </div>
-        <!-- <p><%= urls[shortURL] + " " + "is now" + " " + shortURL%></p> -->
+            <h2> Reassign: <%=shortURL %> to a different URL%> </h2> </div>
         <form action="/urls/<%=shortURL%>" method="POST" style="margin:150px;">
             <label for="longURL">Enter a URL to update it:</label>
             <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
