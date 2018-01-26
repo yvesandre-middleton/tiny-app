@@ -3,9 +3,16 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser')
+const cookieSession = require('cookie-session')
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser())
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 const bcrypt = require('bcrypt');
 
@@ -74,7 +81,7 @@ const users = {
 }
 
 app.get("/login", (req, res) => {
-  let templateVars = {user: users[req.cookies["user_id"]]};
+  let templateVars = {user: users[req.session["user_id"]]};
   console.log("urls/login", templateVars)
   res.render("urls/login", templateVars)
 })
@@ -90,8 +97,8 @@ app.post("/register", (req, res) => {
     }
   }
   var id = generateShortUrl();
-  res.cookie('user_id', id);
-  // req.session.user_id = id
+  // res.cookie('user_id', id);
+  req.session.user_id = id
 
   users[id] = {id: id, email: email, password: password }
   // console.log("email>>", email)
@@ -106,7 +113,7 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/logout/", (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect("/urls")
 })
 
@@ -115,7 +122,7 @@ app.post("/login", (req, res) => {
   var password = req.body.password
   for (key in users) {
     if(users[key].email === email && bcrypt.compareSync(password, users[key]['password'])) {
-      res.cookie('user_id', key)
+      req.session.user_id = key
       res.redirect('/urls')
       return
     }
@@ -127,7 +134,7 @@ app.post("/urls/:id/delete", (req, res) => {
 // console.log("Remind me to delete ",req.params.id)
 // console.log(urlDatabase[req.params.id])
 let takeOut = req.params.id
-const user_id = req.cookies.user_id
+const user_id = req.session.user_id
 for (let key in urlDatabase) {
   if (key === takeOut && urlDatabase[key].userID === user_id) {
     delete urlDatabase[req.params.id];
@@ -140,7 +147,7 @@ app.post("/urls/:id", (req, res) => {
   console.log("Remind me to delete ", req.params.id)
   let shortURL = req.params.id
   let longURL = req.body.longURL
-  let user_id = req.cookies.user_id
+  let user_id = req.session.user_id
 console.log("id>>>", urlDatabase[shortURL].userID)
 console.log("whyyy", user_id)
   // urlDatabase
@@ -162,8 +169,8 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {urls: urlDatabase, user: users[req.cookies["user_id"]]};
-  const user = req.cookies.user_id;
+  let templateVars = {urls: urlDatabase, user: users[req.session["user_id"]]};
+  const user = req.session.user_id;
   console.log("urls/urls_new", templateVars)
   if (users[user]) {
       res.render("urls/urls_new", templateVars);
@@ -176,7 +183,7 @@ app.post("/urls", (req, res) => {
   var shortURL = generateShortUrl();
   var longURL = checkUrl(req.body.longURL);
   urlDatabase[shortURL] = {
-    userID: req.cookies["user_id"],
+    userID: req.session["user_id"],
     longURL: longURL
   };
   console.log(urlDatabase[shortURL]);  // debug statement to see POST parameters
@@ -185,16 +192,16 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id, urls: urlDatabase,
-    user: users[req.cookies["user_id"]]};
+    user: users[req.session["user_id"]]};
     console.log("urls/urls_show", templateVars)
   res.render("urls/urls_show", templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  const user_id = req.cookies.user_id
+  const user_id = req.session.user_id
   const userURL = updateUserURLS(user_id)
   let templateVars = { urls: userURL,
-    user: users[req.cookies["user_id"]]};
+    user: users[req.session["user_id"]]};
   if (users[user_id]) {
     res.render("urls/urls_index", templateVars);
   } else {
