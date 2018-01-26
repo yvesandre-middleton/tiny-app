@@ -4,11 +4,11 @@ Tiny is a full stack web application built with Node and Express that allows use
 
 ## Final Product
 
-!["This is the main URL page populated with shortened long URLs"]()
-!["This is the registration page"]()
-!["This is the log in page"]()
-!["This is the enter a new URL page"]()
-!["This is the page to change the long URL associated with an already created short one"]()
+!["This is the main URL page populated with shortened long URLs"](https://github.com/yvesandre-middleton/tiny-app/blob/master/docs/urls-page.png?raw=true)
+!["This is the registration page"](https://github.com/yvesandre-middleton/tiny-app/blob/master/docs/registration-page.png?raw=true)
+!["This is the log in page"](https://github.com/yvesandre-middleton/tiny-app/blob/master/docs/login-page.png?raw=true)
+!["This is the enter a new URL page"](https://github.com/yvesandre-middleton/tiny-app/blob/master/docs/new-url-to-short-url-page.png?raw=true)
+!["This is the page to edit the long URL associated with an already created short one"](https://github.com/yvesandre-middleton/tiny-app/blob/master/docs/edit-short-url-page.png?raw=true)
 
 ## Dependencies
 
